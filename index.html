@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GalaxyMC — Bedrock Survival Server</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   GALAXYMC — MINECRAFT THEME
+   Pixel-perfect, galaxy-infused MC aesthetic
+============================================ */
+
+:root {
+  --mc-black:    #0d0d0d;
+  --mc-void:     #0a0f1a;
+  --mc-dark:     #111827;
+  --mc-stone:    #6b6b6b;
+  --mc-stone2:   #4a4a4a;
+  --mc-dirt:     #7a5230;
+  --mc-dirt2:    #5c3a1e;
+  --mc-grass:    #4caf50;
+  --mc-grass2:   #2e7d32;
+  --mc-log:      #5c4425;
+  --mc-gold:     #ffd700;
+  --mc-gold2:    #b8860b;
+  --mc-lava:     #ff6600;
+  --mc-lava2:    #cc3300;
+  --mc-water:    #3d85c8;
+  --mc-sky:      #87ceeb;
+  --mc-diamond:  #00e5ff;
+  --mc-emerald:  #00e676;
+  --mc-netherite:#3d3d3d;
+  --mc-obsidian: #1a0933;
+  --mc-redstone: #ff1744;
+  --mc-amethyst: #ce93d8;
+  --px: 4px; /* pixel unit */
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+/* PIXEL FONT EVERYWHERE */
+body {
+  font-family: 'Press Start 2P', monospace;
+  background: var(--mc-void);
+  color: #e8e8e8;
+  font-size: 10px;
+  line-height: 1.8;
+  overflow-x: hidden;
+  image-rendering: pixelated;
+}
+
+/* ============================================
+   ANIMATED BACKGROUND — stars + particles
+============================================ */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ============================================
+   MC PIXEL BORDER UTILITY
+============================================ */
+.mc-border {
+  border: 4px solid;
+  border-color: #fff3 #0005 #0005 #fff3;
+  outline: 4px solid #000;
+  outline-offset: -4px;
+}
+
+.mc-inset {
+  border: 4px solid;
+  border-color: #0005 #fff2 #fff2 #0005;
+  outline: 4px solid #000;
+  outline-offset: -4px;
+}
+
+/* ============================================
+   SCROLLBAR
+============================================ */
+::-webkit-scrollbar { width: 12px; }
+::-webkit-scrollbar-track { background: var(--mc-stone2); }
+::-webkit-scrollbar-thumb {
+  background: var(--mc-dirt);
+  border: 2px solid #000;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--mc-dirt2); }
+
+/* ============================================
+   HEADER / NAV
+============================================ */
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  background: linear-gradient(to bottom, #1a1a1a, #111);
+  border-bottom: 4px solid var(--mc-gold);
+  box-shadow: 0 4px 0 #000, 0 8px 30px rgba(255,215,0,0.15);
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-size: 16px;
+  color: var(--mc-gold);
+  text-shadow: 2px 2px 0 var(--mc-gold2), 4px 4px 0 #000;
+  letter-spacing: 2px;
+  animation: logoPulse 3s ease-in-out infinite;
+  white-space: nowrap;
+}
+
+@keyframes logoPulse {
+  0%,100% { text-shadow: 2px 2px 0 var(--mc-gold2), 4px 4px 0 #000, 0 0 20px rgba(255,215,0,0.3); }
+  50%      { text-shadow: 2px 2px 0 var(--mc-gold2), 4px 4px 0 #000, 0 0 40px rgba(255,215,0,0.7); }
+}
+
+nav {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.nav-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: #ccc;
+  background: linear-gradient(to bottom, #3a3a3a, #222);
+  border: none;
+  border-top: 2px solid #555;
+  border-left: 2px solid #555;
+  border-bottom: 2px solid #111;
+  border-right: 2px solid #111;
+  padding: 10px 14px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.1s;
+  outline: 2px solid #000;
+}
+
+.nav-btn:hover {
+  color: var(--mc-gold);
+  background: linear-gradient(to bottom, #4a4a4a, #333);
+}
+
+.nav-btn.active {
+  color: var(--mc-gold);
+  background: linear-gradient(to bottom, #222, #3a3a3a);
+  border-top: 2px solid #111;
+  border-left: 2px solid #111;
+  border-bottom: 2px solid #555;
+  border-right: 2px solid #555;
+}
+
+/* ============================================
+   MAIN LAYOUT
+============================================ */
+.site-wrapper {
+  position: relative;
+  z-index: 1;
+  padding-top: 64px;
+  min-height: 100vh;
+}
+
+.tab-page {
+  display: none;
+  min-height: calc(100vh - 64px);
+}
+.tab-page.active { display: block; }
+
+/* ============================================
+   HERO SECTION
+============================================ */
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 80px 40px 60px;
+  text-align: center;
+  background:
+    linear-gradient(to bottom, rgba(10,15,26,0.85), rgba(10,15,26,0.95)),
+    repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(255,255,255,0.03) 32px),
+    repeating-linear-gradient(90deg, transparent, transparent 31px, rgba(255,255,255,0.03) 32px);
+  border-bottom: 4px solid #000;
+}
+
+.hero-grass {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 32px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--mc-grass) 0px, var(--mc-grass) 32px,
+    var(--mc-grass2) 32px, var(--mc-grass2) 64px
+  );
+  border-top: 4px solid #000;
+}
+
+.hero-grass::before {
+  content: '';
+  position: absolute;
+  top: -8px; left: 0; right: 0;
+  height: 8px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--mc-grass2) 0px, var(--mc-grass2) 8px,
+    transparent 8px, transparent 16px,
+    var(--mc-grass) 16px, var(--mc-grass) 24px,
+    transparent 24px, transparent 32px
+  );
+}
+
+.hero-title {
+  font-size: clamp(20px, 5vw, 48px);
+  color: var(--mc-gold);
+  text-shadow: 3px 3px 0 var(--mc-gold2), 6px 6px 0 #000;
+  margin-bottom: 16px;
+  animation: heroSlide 0.8s ease;
+  letter-spacing: 4px;
+}
+
+@keyframes heroSlide {
+  from { transform: translateY(-30px); opacity: 0; }
+  to   { transform: translateY(0);      opacity: 1; }
+}
+
+.hero-sub {
+  font-size: 9px;
+  color: var(--mc-sky);
+  text-shadow: 1px 1px 0 #000, 2px 2px 0 rgba(0,0,0,0.5);
+  margin-bottom: 40px;
+  letter-spacing: 2px;
+  animation: heroSlide 0.8s 0.2s both ease;
+}
+
+/* STATUS CARDS */
+.status-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+  animation: heroSlide 0.8s 0.4s both ease;
+}
+
+.stat-block {
+  background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+  border-top: 3px solid #555;
+  border-left: 3px solid #555;
+  border-bottom: 3px solid #111;
+  border-right: 3px solid #111;
+  outline: 3px solid #000;
+  padding: 16px 24px;
+  min-width: 130px;
+  text-align: center;
+  transition: transform 0.1s;
+  cursor: default;
+}
+
+.stat-block:hover {
+  transform: translateY(-2px);
+  border-top-color: var(--mc-gold);
+  border-left-color: var(--mc-gold);
+}
+
+.stat-label {
+  font-size: 7px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.stat-value {
+  font-size: 14px;
+  color: var(--mc-diamond);
+  text-shadow: 1px 1px 0 #000, 0 0 10px rgba(0,229,255,0.4);
+}
+
+.stat-value.green { color: var(--mc-emerald); text-shadow: 1px 1px 0 #000, 0 0 10px rgba(0,230,118,0.4); }
+.stat-value.gold  { color: var(--mc-gold);    text-shadow: 1px 1px 0 #000, 0 0 10px rgba(255,215,0,0.4); }
+
+/* HERO BUTTONS */
+.hero-btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: heroSlide 0.8s 0.6s both ease;
+}
+
+/* ============================================
+   MC BUTTONS
+============================================ */
+.mc-btn {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  padding: 14px 24px;
+  cursor: pointer;
+  text-transform: uppercase;
+  border: none;
+  outline: 3px solid #000;
+  transition: filter 0.1s, transform 0.1s;
+  position: relative;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.mc-btn:active { transform: translateY(2px); }
+
+.mc-btn.green {
+  background: linear-gradient(to bottom, #5cb85c, #3d8b3d);
+  border-top: 3px solid #7fd07f;
+  border-left: 3px solid #7fd07f;
+  border-bottom: 3px solid #1a5e1a;
+  border-right: 3px solid #1a5e1a;
+}
+.mc-btn.green:hover { filter: brightness(1.2); }
+
+.mc-btn.blue {
+  background: linear-gradient(to bottom, #337ab7, #1a5276);
+  border-top: 3px solid #5ba3d9;
+  border-left: 3px solid #5ba3d9;
+  border-bottom: 3px solid #0e3152;
+  border-right: 3px solid #0e3152;
+}
+.mc-btn.blue:hover { filter: brightness(1.2); }
+
+.mc-btn.gold {
+  background: linear-gradient(to bottom, #d4a017, #8b6914);
+  border-top: 3px solid #ffd700;
+  border-left: 3px solid #ffd700;
+  border-bottom: 3px solid #5c4510;
+  border-right: 3px solid #5c4510;
+  color: #fff8dc;
+}
+.mc-btn.gold:hover { filter: brightness(1.2); }
+
+.mc-btn.red {
+  background: linear-gradient(to bottom, #c0392b, #7b241c);
+  border-top: 3px solid #e74c3c;
+  border-left: 3px solid #e74c3c;
+  border-bottom: 3px solid #4a1209;
+  border-right: 3px solid #4a1209;
+}
+.mc-btn.red:hover { filter: brightness(1.2); }
+
+/* ============================================
+   PAGE SECTIONS
+============================================ */
+.page-body {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+/* CONTENT GRID */
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* MC CARD */
+.mc-card {
+  background: linear-gradient(to bottom, #2c2c2c, #1e1e1e);
+  border-top: 3px solid #4a4a4a;
+  border-left: 3px solid #4a4a4a;
+  border-bottom: 3px solid #0d0d0d;
+  border-right: 3px solid #0d0d0d;
+  outline: 3px solid #000;
+  padding: 24px;
+  transition: transform 0.15s, filter 0.15s;
+}
+
+.mc-card:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.1);
+}
+
+.card-title {
+  font-size: 10px;
+  color: var(--mc-gold);
+  text-shadow: 1px 1px 0 var(--mc-gold2), 2px 2px 0 #000;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #000;
+  border-bottom-color: var(--mc-gold2);
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-body {
+  font-size: 8px;
+  color: #aaa;
+  line-height: 2.2;
+}
+
+.card-body strong { color: #ddd; }
+.card-body .hl-green  { color: var(--mc-emerald); }
+.card-body .hl-gold   { color: var(--mc-gold); }
+.card-body .hl-blue   { color: var(--mc-diamond); }
+.card-body .hl-red    { color: var(--mc-redstone); }
+.card-body .hl-purple { color: var(--mc-amethyst); }
+
+/* ============================================
+   NEWS ITEMS
+============================================ */
+.news-item {
+  background: linear-gradient(to right, rgba(61,133,200,0.1), transparent);
+  border-left: 4px solid var(--mc-water);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  outline: 2px solid #000;
+}
+
+.news-date {
+  font-size: 7px;
+  color: var(--mc-water);
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.news-title {
+  font-size: 9px;
+  color: var(--mc-gold);
+  text-shadow: 1px 1px 0 #000;
+  margin-bottom: 8px;
+}
+
+.news-body { font-size: 7px; color: #999; line-height: 2; }
+
+/* ============================================
+   SHOP / STORE / VOTE GRID
+============================================ */
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.shop-card {
+  background: linear-gradient(to bottom, #2a2010, #1a1408);
+  border-top: 3px solid #6b5420;
+  border-left: 3px solid #6b5420;
+  border-bottom: 3px solid #0d0a05;
+  border-right: 3px solid #0d0a05;
+  outline: 3px solid #000;
+  padding: 24px 16px;
+  text-align: center;
+  transition: transform 0.15s, filter 0.15s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.shop-card:hover {
+  transform: translateY(-4px) scale(1.02);
+  filter: brightness(1.2);
+}
+
+.shop-icon { font-size: 32px; margin-bottom: 12px; display: block; }
+
+.shop-name {
+  font-size: 8px;
+  color: var(--mc-gold);
+  text-shadow: 1px 1px 0 #000;
+  margin-bottom: 8px;
+}
+
+.shop-desc {
+  font-size: 7px;
+  color: #888;
+  line-height: 2;
+  margin-bottom: 16px;
+  flex-grow: 1;
+}
+
+.shop-price {
+  font-size: 11px;
+  color: var(--mc-emerald);
+  text-shadow: 1px 1px 0 #000;
+  margin-bottom: 14px;
+}
+
+/* ============================================
+   SECTION DIVIDER (grass block row)
+============================================ */
+.mc-divider {
+  height: 16px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--mc-grass2) 0px,  var(--mc-grass2) 8px,
+    var(--mc-grass)  8px,  var(--mc-grass)  16px
+  );
+  border-top: 2px solid #000;
+  border-bottom: 2px solid #000;
+  margin: 0;
+}
+
+/* ============================================
+   RULES PAGE
+============================================ */
+.rule-item {
+  background: linear-gradient(to right, rgba(255,23,68,0.06), transparent);
+  border-left: 4px solid var(--mc-redstone);
+  padding: 16px 20px;
+  margin-bottom: 10px;
+  outline: 2px solid #000;
+}
+
+.rule-num {
+  font-size: 8px;
+  color: var(--mc-redstone);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.rule-title { font-size: 9px; color: #e0e0e0; margin-bottom: 6px; }
+.rule-body  { font-size: 7px; color: #888; line-height: 2; }
+
+/* ============================================
+   PAGE HEADER BANNER
+============================================ */
+.page-banner {
+  background:
+    linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.3), rgba(0,0,0,0.7)),
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,215,0,0.03) 0px, rgba(255,215,0,0.03) 4px,
+      transparent 4px, transparent 32px
+    );
+  border-bottom: 4px solid #000;
+  border-top: 4px solid #000;
+  padding: 32px 40px;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.page-banner h2 {
+  font-size: 18px;
+  color: var(--mc-gold);
+  text-shadow: 2px 2px 0 var(--mc-gold2), 4px 4px 0 #000;
+  letter-spacing: 3px;
+}
+
+.page-banner p {
+  font-size: 8px;
+  color: #888;
+  margin-top: 8px;
+  letter-spacing: 1px;
+}
+
+/* ============================================
+   FOOTER
+============================================ */
+footer {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(to bottom, #0d0d0d, #080808);
+  border-top: 4px solid var(--mc-gold);
+  padding: 40px 32px 32px;
+}
+
+/* Bottom grass strip */
+.footer-grass {
+  height: 16px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--mc-grass) 0px, var(--mc-grass) 8px,
+    var(--mc-grass2) 8px, var(--mc-grass2) 16px
+  );
+  border-bottom: 2px solid #000;
+  margin-bottom: 32px;
+}
+
+.footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 32px;
+}
+
+.footer-logo {
+  font-size: 14px;
+  color: var(--mc-gold);
+  text-shadow: 2px 2px 0 var(--mc-gold2), 4px 4px 0 #000;
+  margin-bottom: 14px;
+  letter-spacing: 2px;
+}
+
+.footer-desc {
+  font-size: 7px;
+  color: #555;
+  line-height: 2.2;
+  max-width: 260px;
+}
+
+.footer-heading {
+  font-size: 8px;
+  color: var(--mc-diamond);
+  text-shadow: 1px 1px 0 #000;
+  margin-bottom: 14px;
+  letter-spacing: 1px;
+}
+
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 10px; }
+.footer-links a {
+  font-size: 7px;
+  color: #555;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s;
+  letter-spacing: 1px;
+}
+.footer-links a:hover { color: var(--mc-gold); }
+
+.footer-bottom {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-top: 20px;
+  border-top: 2px solid #1a1a1a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-copy { font-size: 7px; color: #333; letter-spacing: 1px; }
+.footer-ip   { font-size: 7px; color: #444; letter-spacing: 1px; }
+
+/* ============================================
+   TOAST
+============================================ */
+.toast {
+  position: fixed;
+  bottom: 40px; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: linear-gradient(to bottom, #2a2a2a, #1a1a1a);
+  border-top: 2px solid #555;
+  border-left: 2px solid #555;
+  border-bottom: 2px solid #111;
+  border-right: 2px solid #111;
+  outline: 3px solid #000;
+  color: var(--mc-emerald);
+  font-size: 8px;
+  letter-spacing: 1px;
+  padding: 14px 24px;
+  z-index: 9999;
+  opacity: 0;
+  transition: all 0.3s;
+  white-space: nowrap;
+  text-shadow: 1px 1px 0 #000;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ============================================
+   MISC UTILITIES
+============================================ */
+.mb16 { margin-bottom: 16px; }
+.mb24 { margin-bottom: 24px; }
+.mt16 { margin-top: 16px; }
+.mt24 { margin-top: 24px; }
+.flex-gap { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.badge {
+  display: inline-block;
+  font-size: 7px;
+  padding: 4px 10px;
+  outline: 2px solid #000;
+  text-shadow: 1px 1px 0 #000;
+  letter-spacing: 1px;
+}
+.badge.green  { background: var(--mc-grass2);   color: #fff; }
+.badge.red    { background: var(--mc-lava2);    color: #fff; }
+.badge.gold   { background: var(--mc-gold2);    color: #fff; }
+.badge.blue   { background: var(--mc-water);    color: #fff; }
+.badge.purple { background: #6a1fa0;            color: #fff; }
+
+/* ============================================
+   RESPONSIVE
+============================================ */
+@media (max-width: 900px) {
+  header { padding: 0 12px; }
+  .nav-logo { font-size: 11px; }
+  .nav-btn { font-size: 7px; padding: 8px 10px; }
+  .hero { padding: 60px 20px 50px; }
+  .hero-title { font-size: 20px; }
+  .footer-inner { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .page-body { padding: 24px 16px 60px; }
+}
+
+@media (max-width: 600px) {
+  .nav-logo { font-size: 10px; }
+  .nav-btn  { font-size: 6px; padding: 7px 8px; }
+  .hero-title { font-size: 16px; }
+  .stat-block { min-width: 100px; padding: 12px 14px; }
+  .footer-inner { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<header>
+  <div class="nav-logo">⚔️ GalaxyMC</div>
+  <nav>
+    <button class="nav-btn active" onclick="showPage('dashboard', this)">🏠 Home</button>
+    <button class="nav-btn" onclick="showPage('news', this)">📢 News</button>
+    <button class="nav-btn" onclick="showPage('store', this)">🛒 Store</button>
+    <button class="nav-btn" onclick="showPage('vote', this)">🗳️ Vote</button>
+    <button class="nav-btn" onclick="showPage('rules', this)">📜 Rules</button>
+  </nav>
+</header>
+
+<div class="site-wrapper">
+
+<div id="page-dashboard" class="tab-page active">
+
+  <div class="hero">
+    <h1 class="hero-title">✦ GALAXYMC ✦</h1>
+    <p class="hero-sub">🚀 India's #1 Bedrock Survival & PvP Server 🚀</p>
+
+    <div class="status-row">
+      <div class="stat-block">
+        <span class="stat-label">Server Status</span>
+        <span class="stat-value green">🟢 ONLINE</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-label">Players Online</span>
+        <span class="stat-value" id="player-count">Loading...</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-label">Version</span>
+        <span class="stat-value">1.21.x</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-label">Server TPS</span>
+        <span class="stat-value green">20.0</span>
+      </div>
+    </div>
+
+    <div class="hero-btns">
+      <button class="mc-btn green" onclick="copyIP('play.galaxymcpe.fun')">📋 Copy Bedrock IP</button>
+      <button class="mc-btn blue" onclick="showPage('store', document.querySelector('[onclick*=store]'))">🛒 Buy Ranks</button>
+      <button class="mc-btn gold" onclick="window.open('https://discord.galaxymcpe.fun','_blank')">💬 Discord</button>
+    </div>
+
+    <div class="hero-grass"></div>
+  </div>
+
+  <div class="mc-divider"></div>
+
+  <div class="page-body">
+    <div class="grid-2">
+
+      <div class="mc-card">
+        <div class="card-title">🌌 About GalaxyMC</div>
+        <div class="card-body">
+          Welcome to <span class="hl-gold">GalaxyMC</span> — India's public Minecraft server.<br><br>
+          Built with 2+ years of Minecraft experience, we deliver a <span class="hl-green">lag-free</span>, <span class="hl-blue">custom</span>, and <span class="hl-gold">competitive</span> experience.<br><br>
+          No pay-to-win. Just pure gameplay.
+        </div>
+      </div>
+
+      <div class="mc-card">
+        <div class="card-title">⭐ Quick Connect</div>
+        <div class="card-body">
+          <span class="hl-blue">🔗 Bedrock IP:</span><br>
+          &nbsp;&nbsp;<span class="hl-gold" style="cursor:pointer" onclick="copyIP('play.galaxymcpe.fun')">play.galaxymcpe.fun</span><br>
+          &nbsp;&nbsp;Port: <span class="hl-green">19132</span><br><br>
+          <span class="hl-purple">💬 Discord:</span><br>
+          &nbsp;&nbsp;<span class="hl-gold" style="cursor:pointer" onclick="window.open('https://discord.galaxymcpe.fun','_blank')">discord.galaxymcpe.fun</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="mc-card mb24">
+      <div class="card-title">✨ Server Features</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;" class="card-body">
+        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">💻 &nbsp;<span class="hl-blue">Cross-Play Support</span><br><span style="font-size:7px;color:#666;margin-top:4px;display:block;">Java + Bedrock + Cracked + Premium</span></div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">⏳ &nbsp;<span class="hl-green">24/7 Online</span><br><span style="font-size:7px;color:#666;margin-top:4px;display:block;">Server is always up and running</span></div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">🗳️ &nbsp;<span class="hl-gold">Voting & Free Ranks</span><br><span style="font-size:7px;color:#666;margin-top:4px;display:block;">Free rankup system by doing votes</span></div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">🏡 &nbsp;<span class="hl-green">Land Claim & Economy</span><br><span style="font-size:7px;color:#666;margin-top:4px;display:block;">Protect builds and trade with players</span></div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">⚔️ &nbsp;<span class="hl-red">Arena & Warps</span><br><span style="font-size:7px;color:#666;margin-top:4px;display:block;">Fast travel and PvP arenas</span></div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">🛡️ &nbsp;<span class="hl-green">Lag-Free Experience</span><br><span style="font-size:7px;color:#666;margin-top:4px;display:block;">Dedicated VPS, smooth 20 TPS</span></div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">🌍 &nbsp;<span class="hl-gold">Custom World Gen</span><br><span style="font-size:7px;color:#666;margin-top:4px;display:block;">Beautiful terrain and structures</span></div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">👮 &nbsp;<span class="hl-blue">Staff & Anti-Cheat</span><br><span style="font-size:7px;color:#666;margin-top:4px;display:block;">Active support and no hackers</span></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="mc-card">
+        <div class="card-title">🎮 Gamemodes</div>
+        <div class="card-body">
+
+          <div style="background:rgba(76,175,80,0.1);border-left:3px solid #4caf50;padding:10px 14px;margin-bottom:8px;outline:1px solid #000;">
+            <span class="hl-green">⚔️ Survival</span> &nbsp;<span class="badge green">ACTIVE</span><br>
+            <span style="font-size:7px;color:#777;">Custom world gen, rare ores, brutal mobs</span>
+          </div>
+
+          <div style="background:rgba(255,23,68,0.1);border-left:3px solid #ff1744;padding:10px 14px;margin-bottom:8px;outline:1px solid #000;">
+            <span class="hl-red">❤️ Lifesteal</span> &nbsp;<span class="badge blue">SOON</span><br>
+            <span style="font-size:7px;color:#777;">Steal hearts on kill, lose hearts on death</span>
+          </div>
+
+          <div style="background:rgba(255,102,0,0.1);border-left:3px solid #ff6600;padding:10px 14px;margin-bottom:8px;outline:1px solid #000;">
+            <span class="hl-gold">🔥 PvP Arena</span> &nbsp;<span class="badge blue">SOON</span><br>
+            <span style="font-size:7px;color:#777;">Action-packed player vs player combat</span>
+          </div>
+
+          <div style="background:rgba(0,229,255,0.07);border-left:3px solid #00e5ff;padding:10px 14px;outline:1px solid #000;">
+            <span class="hl-blue">🛏️ Bedwars</span> &nbsp;<span class="badge blue">SOON</span><br>
+            <span style="font-size:7px;color:#777;">Defend your bed and destroy others</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="page-news" class="tab-page">
+  <div class="page-banner">
+    <h2>📢 ANNOUNCEMENTS</h2>
+    <p>Latest news, updates and events from GalaxyMC</p>
+  </div>
+  <div class="mc-divider"></div>
+  <div class="page-body">
+    <div style="max-width: 600px; margin: 0 auto;">
+
+      <div class="mc-card">
+        <div class="card-title">📌 Pinned Announcements</div>
+        <div class="card-body">
+          <div style="border-left:3px solid var(--mc-gold);padding:10px 14px;margin-bottom:12px;background:rgba(255,215,0,0.05);">
+            <span class="hl-gold">Server IP Update</span><br>
+            play.galaxymcpe.fun is the official IP.<br>
+            Port: 19132
+          </div>
+          <div style="border-left:3px solid var(--mc-diamond);padding:10px 14px;background:rgba(0,229,255,0.05);">
+            <span class="hl-blue">Discord is mandatory</span><br>
+            Join Discord for events, support,<br>
+            and purchasing ranks via tickets.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="page-store" class="tab-page">
+  <div class="page-banner">
+    <h2>🛒 RANK STORE</h2>
+    <p>Support the server — unlock exclusive perks!</p>
+  </div>
+  <div class="mc-divider"></div>
+  <div class="page-body">
+
+    <div class="mc-card mb24" style="border-top-color:var(--mc-emerald); border-left-color:var(--mc-emerald);">
+      <div class="card-title">ℹ️ How To Purchase</div>
+      <div class="card-body">
+        All purchases go directly toward server development and maintenance. Ranks are <span class="hl-green">NOT pay-to-win</span>.<br><br>
+        <span class="hl-gold">⚠️ PURCHASE INSTRUCTIONS:</span> To buy a rank, please join our Discord server at <b>discord.galaxymcpe.fun</b> and create a <b>Higher-Up Support Ticket</b>. Our team will assist you with the payment and activate your perks!
+      </div>
+    </div>
+
+    <div class="shop-grid">
+
+      <div class="shop-card">
+        <span class="shop-icon">🛡️</span>
+        <div class="shop-name">ELITE</div>
+        <div class="shop-desc">Elite Prefix & Kit<br>3X Homes & Player Vaults<br>1X Glow & Chat Colour<br>50,000 In-game Money<br>Basic Commands Access</div>
+        <div class="shop-price" style="color:var(--mc-diamond);">@99₹ / mo</div>
+        <button class="mc-btn blue" style="font-size:7px;padding:10px 16px;" onclick="window.open('https://discord.galaxymcpe.fun','_blank')">Buy via Discord Ticket</button>
+      </div>
+
+      <div class="shop-card">
+        <span class="shop-icon">⚔️</span>
+        <div class="shop-name">ELDER</div>
+        <div class="shop-desc">Elder Prefix & Kit<br>5X Homes, Vaults & Warps<br>2X Glows & Chat Colours<br>100,000 In-game Money<br>Advanced Commands</div>
+        <div class="shop-price" style="color:var(--mc-emerald);">@199₹ / mo</div>
+        <button class="mc-btn green" style="font-size:7px;padding:10px 16px;" onclick="window.open('https://discord.galaxymcpe.fun','_blank')">Buy via Discord Ticket</button>
+      </div>
+
+      <div class="shop-card">
+        <span class="shop-icon">👑</span>
+        <div class="shop-name">NOBLE</div>
+        <div class="shop-desc">Noble Prefix & Kit<br>10X Homes, Vaults & Warps<br>3X Glows & Chat Colours<br>150,000 In-game Money<br>Premium Commands</div>
+        <div class="shop-price" style="color:var(--mc-gold);">@399₹ / mo</div>
+        <button class="mc-btn gold" style="font-size:7px;padding:10px 16px;" onclick="window.open('https://discord.galaxymcpe.fun','_blank')">Buy via Discord Ticket</button>
+      </div>
+
+      <div class="shop-card">
+        <span class="shop-icon">🌋</span>
+        <div class="shop-name">LEGEND</div>
+        <div class="shop-desc">Legend Prefix & Kit<br>20X Homes, Vaults & Warps<br>4X Glows & Chat Colours<br>250,000 In-game Money<br>All Premium Commands</div>
+        <div class="shop-price" style="color:var(--mc-lava);">@499₹ / mo</div>
+        <button class="mc-btn red" style="font-size:7px;padding:10px 16px;" onclick="window.open('https://discord.galaxymcpe.fun','_blank')">Buy via Discord Ticket</button>
+      </div>
+
+      <div class="shop-card">
+        <span class="shop-icon">🌌</span>
+        <div class="shop-name">GALAXY</div>
+        <div class="shop-desc">Galaxy Prefix & Kit<br>30X Homes, Vaults & Warps<br>All Glows & Chat Colours<br>500,000 In-game Money<br>Max Level Commands</div>
+        <div class="shop-price" style="color:var(--mc-amethyst);">@699₹ / mo</div>
+        <button class="mc-btn" style="font-size:7px;padding:10px 16px;background:linear-gradient(to bottom,#6a1fa0,#3d0d5c);border-top:3px solid #9c27b0;border-left:3px solid #9c27b0;border-bottom:3px solid #1a0033;border-right:3px solid #1a0033;outline:3px solid #000;" onclick="window.open('https://discord.galaxymcpe.fun','_blank')">Buy via Discord Ticket</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="page-vote" class="tab-page">
+  <div class="page-banner">
+    <h2>🗳️ VOTE FOR US</h2>
+    <p>Support GalaxyMC and earn free in-game rewards every day!</p>
+  </div>
+  <div class="mc-divider"></div>
+  <div class="page-body">
+    <div class="mc-card mb24" style="border-top-color:var(--mc-diamond); border-left-color:var(--mc-diamond);">
+      <div class="card-title">🎁 Voting Rewards</div>
+      <div class="card-body">
+        Vote on all 5 links daily to receive <span class="hl-gold">Vote Keys, In-game Money, and exclusive items</span>. Make sure to enter your exact Minecraft Gamertag when voting!
+      </div>
+    </div>
+
+    <div class="shop-grid">
+      <div class="shop-card">
+        <span class="shop-icon">🌟</span>
+        <div class="shop-name">VOTE LINK 1</div>
+        <div class="shop-desc">Vote on Site #1 to claim your daily rewards.</div>
+        <button class="mc-btn blue mt16" style="font-size:7px;padding:10px 16px;" onclick="window.open('https://vote.galaxymcpe.fun/1','_blank')">Vote Now</button>
+      </div>
+
+      <div class="shop-card">
+        <span class="shop-icon">⭐</span>
+        <div class="shop-name">VOTE LINK 2</div>
+        <div class="shop-desc">Vote on Site #2 to claim your daily rewards.</div>
+        <button class="mc-btn green mt16" style="font-size:7px;padding:10px 16px;" onclick="window.open('https://vote.galaxymcpe.fun/2','_blank')">Vote Now</button>
+      </div>
+
+      <div class="shop-card">
+        <span class="shop-icon">✨</span>
+        <div class="shop-name">VOTE LINK 3</div>
+        <div class="shop-desc">Vote on Site #3 to claim your daily rewards.</div>
+        <button class="mc-btn gold mt16" style="font-size:7px;padding:10px 16px;" onclick="window.open('https://vote.galaxymcpe.fun/3','_blank')">Vote Now</button>
+      </div>
+
+      <div class="shop-card">
+        <span class="shop-icon">💫</span>
+        <div class="shop-name">VOTE LINK 4</div>
+        <div class="shop-desc">Vote on Site #4 to claim your daily rewards.</div>
+        <button class="mc-btn red mt16" style="font-size:7px;padding:10px 16px;" onclick="window.open('https://vote.galaxymcpe.fun/4','_blank')">Vote Now</button>
+      </div>
+
+      <div class="shop-card">
+        <span class="shop-icon">☄️</span>
+        <div class="shop-name">VOTE LINK 5</div>
+        <div class="shop-desc">Vote on Site #5 to claim your daily rewards.</div>
+        <button class="mc-btn" style="font-size:7px;padding:10px 16px;background:linear-gradient(to bottom,#6a1fa0,#3d0d5c);border-top:3px solid #9c27b0;border-left:3px solid #9c27b0;border-bottom:3px solid #1a0033;border-right:3px solid #1a0033;outline:3px solid #000;color:#fff;" onclick="window.open('https://vote.galaxymcpe.fun/5','_blank')">Vote Now</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="page-rules" class="tab-page">
+  <div class="page-banner">
+    <h2>📜 SERVER RULES</h2>
+    <p>To keep our galaxy running smoothly, follow these rules and USE COMMON SENSE.</p>
+  </div>
+  <div class="mc-divider"></div>
+  <div class="page-body">
+    <div class="grid-2">
+      <div>
+        
+        <div class="mc-card mb24" style="border-top-color:#ce93d8;border-left-color:#ce93d8;">
+          <div class="card-title" style="color:var(--mc-amethyst);">💬 Discord Rules</div>
+          <div class="card-body">
+            <ul style="list-style-type:none; padding:0; margin:0; line-height:2.5;">
+              <li>> <b>Treat everyone with respect</b> – No hate, bullying, or drama.</li>
+              <li>> <b>Keep it clean</b> – No NSFW or disturbing content.</li>
+              <li>> <b>No excessive pinging</b>, spam, or promotions.</li>
+              <li>> <b>Listen to staff</b> – Don't argue if you're warned.</li>
+              <li>> <b>VC Rules</b> – No loud noises, echo mics, or trolling.</li>
+              <li>> Follow Discord Terms & Privacy Policy</li>
+            </ul>
+          </div>
+        </div>
+        
+      </div>
+      <div>
+
+        <div class="mc-card mb24" style="border-top-color:#00e5ff;border-left-color:#00e5ff;">
+          <div class="card-title" style="color:var(--mc-diamond);">⛏️ Minecraft Rules</div>
+          <div class="card-body">
+            <ul style="list-style-type:none; padding:0; margin:0; line-height:2.5;">
+              <li>> <b>No hacks, cheats, or auto-clickers</b> – Play fair and stay legit.</li>
+              <li>> <b>No tp trapping players</b> – avoid tp trapping.</li>
+              <li>> <b>No spawn camping, tp trapping, or exploiting bugs</b> – Keep gameplay fair.</li>
+              <li>> <b>Avoid lag machines, auto farms</b>, or anything that disrupts performance.</li>
+              <li>> <b>No scams or trust abuse</b> – Be honest in trades and respectful.</li>
+              <li>> <b>Chat respectfully</b> – No toxic spam, offensive language, or harassment.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mc-card" style="background:rgba(255,255,255,0.05);">
+          <div class="card-body" style="text-align:center;">
+            ⚠️ Need help or want to report an issue?<br>
+            <span class="hl-gold">Open a ticket in #🎟・ticket</span>. We're here to help!
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><footer>
+  <div class="footer-grass"></div>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">⚔️ GalaxyMC</div>
+      <div class="footer-desc">India's public Minecraft server. Built with 2+ years of MC experience. Season 2 is live.</div>
+    </div>
+    <div>
+      <div class="footer-heading">🎮 Server</div>
+      <ul class="footer-links">
+        <li><a onclick="showPage('dashboard', null)">Dashboard</a></li>
+        <li><a onclick="showPage('news', null)">News</a></li>
+        <li><a onclick="showPage('store', null)">Store</a></li>
+        <li><a onclick="showPage('vote', null)">Vote</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">🔗 Connect</div>
+      <ul class="footer-links">
+        <li><a href="https://discord.galaxymcpe.fun" target="_blank">Discord Server</a></li>
+        <li><a href="https://discord.galaxymcpe.fun" target="_blank">Report Bug (Tickets)</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">📋 Server Info</div>
+      <ul class="footer-links">
+        <li><a onclick="copyIP('play.galaxymcpe.fun')">play.galaxymcpe.fun</a></li>
+        <li><a>Port: 19132</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 GalaxyMC — All Rights Reserved</div>
+    <div class="footer-ip">play.galaxymcpe.fun · 19132</div>
+  </div>
+</footer>
+
+<div class="toast" id="toast">📋 Copied!</div>
+
+<script>
+/* ============================================
+   STARS, FIREFLIES & CLICK PARTICLES CANVAS
+============================================ */
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+const STARS = Array.from({length: 180}, () => ({
+  x: Math.random(), y: Math.random(),
+  r: Math.random() * 1.5 + 0.3,
+  a: Math.random(),
+  spd: Math.random() * 0.004 + 0.001,
+  ph: Math.random() * Math.PI * 2
+}));
+
+// Pixel star clusters (8x8 mc-style)
+const PIXEL_STARS = Array.from({length: 12}, () => ({
+  x: Math.random(), y: Math.random(),
+  size: Math.floor(Math.random() * 3 + 1) * 2,
+  color: ['#ffd700','#00e5ff','#00e676','#ce93d8','#fff'][Math.floor(Math.random()*5)],
+  blink: Math.random() * 0.003 + 0.001,
+  ph: Math.random() * Math.PI * 2
+}));
+
+// Array to hold click burst particles
+const CLICK_PARTICLES = [];
+
+// Listen for clicks to spawn particles
+window.addEventListener('click', (e) => {
+  const particleCount = Math.floor(Math.random() * 5) + 15;
+  for (let i = 0; i < particleCount; i++) {
+    CLICK_PARTICLES.push({
+      x: e.clientX,
+      y: e.clientY,
+      vx: (Math.random() - 0.5) * 10,
+      vy: (Math.random() - 0.5) * 10,
+      size: Math.floor(Math.random() * 3 + 1) * 2,
+      life: 1.0,
+      color: ['#00e5ff', '#00e676', '#ffd700', '#ce93d8', '#ff1744'][Math.floor(Math.random() * 5)]
+    });
+  }
+});
+
+let t = 0;
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  STARS.forEach(s => {
+    const a = (Math.sin(t * s.spd + s.ph) + 1) / 2 * 0.9 + 0.05;
+    ctx.beginPath();
+    ctx.arc(s.x * canvas.width, s.y * canvas.height, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(220,235,255,${a})`;
+    ctx.fill();
+  });
+
+  PIXEL_STARS.forEach(s => {
+    const a = (Math.sin(t * s.blink + s.ph) + 1) / 2 * 0.8 + 0.1;
+    ctx.globalAlpha = a;
+    ctx.fillStyle = s.color;
+    ctx.fillRect(s.x * canvas.width, s.y * canvas.height, s.size, s.size);
+    ctx.globalAlpha = 1;
+  });
+
+  for (let i = CLICK_PARTICLES.length - 1; i >= 0; i--) {
+    let p = CLICK_PARTICLES[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.2; 
+    p.life -= 0.02; 
+
+    if (p.life <= 0) {
+      CLICK_PARTICLES.splice(i, 1);
+    } else {
+      ctx.globalAlpha = p.life;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(p.x, p.y, p.size, p.size);
+    }
+  }
+  ctx.globalAlpha = 1; 
+
+  t += 1;
+  requestAnimationFrame(draw);
+}
+draw();
+
+/* ============================================
+   LIVE PLAYER COUNT API FETCH
+============================================ */
+function updateServerStats() {
+  fetch('https://api.mcsrvstat.us/bedrock/2/play.galaxymcpe.fun')
+    .then(response => response.json())
+    .then(data => {
+      const countElement = document.getElementById('player-count');
+      if (data.online) {
+        countElement.textContent = data.players.online + '/' + data.players.max;
+      } else {
+        countElement.textContent = 'Offline';
+      }
+    })
+    .catch(err => {
+      console.error('Error fetching server stats:', err);
+      document.getElementById('player-count').textContent = 'Error';
+    });
+}
+// Update stats every 15 seconds
+setInterval(updateServerStats, 15000);
+// Initial call on page load
+document.addEventListener('DOMContentLoaded', updateServerStats);
+
+/* ============================================
+   TAB NAVIGATION
+============================================ */
+function showPage(page, btn) {
+  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  if (btn) btn.classList.add('active');
+  else {
+    document.querySelectorAll('.nav-btn').forEach(b => {
+      if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(page)) {
+        b.classList.add('active');
+      }
+    });
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ============================================
+   COPY IP
+============================================ */
+function copyIP(ip) {
+  navigator.clipboard.writeText(ip).then(() => {
+    showToast('📋 ' + ip + ' — Copied!');
+  }).catch(() => {
+    showToast('📋 IP: ' + ip);
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+/* ============================================
+   SCROLL REVEAL
+============================================ */
+const revealItems = document.querySelectorAll('.mc-card, .shop-card, .news-item, .rule-item, .lb-item');
+revealItems.forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(16px)';
+  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+});
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }, 50);
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+revealItems.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
