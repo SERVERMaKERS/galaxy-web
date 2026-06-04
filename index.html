@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GalaxyMC — Bedrock Survival Server</title>
+<title>GalaxyMC — Survival Server</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 /* ============================================
@@ -113,6 +113,8 @@ header {
   letter-spacing: 2px;
   animation: logoPulse 3s ease-in-out infinite;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
 }
 
 @keyframes logoPulse {
@@ -213,6 +215,13 @@ nav {
     var(--mc-grass) 16px, var(--mc-grass) 24px,
     transparent 24px, transparent 32px
   );
+}
+
+.hero-logo-img {
+  height: 80px;
+  margin-bottom: 16px;
+  animation: heroSlide 0.8s ease;
+  filter: drop-shadow(4px 4px 0 #000);
 }
 
 .hero-title {
@@ -607,6 +616,8 @@ footer {
   text-shadow: 2px 2px 0 var(--mc-gold2), 4px 4px 0 #000;
   margin-bottom: 14px;
   letter-spacing: 2px;
+  display: flex;
+  align-items: center;
 }
 
 .footer-desc {
@@ -707,6 +718,7 @@ footer {
   .nav-logo { font-size: 11px; }
   .nav-btn { font-size: 7px; padding: 8px 10px; }
   .hero { padding: 60px 20px 50px; }
+  .hero-logo-img { height: 60px; }
   .hero-title { font-size: 20px; }
   .footer-inner { grid-template-columns: 1fr 1fr; gap: 24px; }
   .page-body { padding: 24px 16px 60px; }
@@ -715,6 +727,7 @@ footer {
 @media (max-width: 600px) {
   .nav-logo { font-size: 10px; }
   .nav-btn  { font-size: 6px; padding: 7px 8px; }
+  .hero-logo-img { height: 50px; }
   .hero-title { font-size: 16px; }
   .stat-block { min-width: 100px; padding: 12px 14px; }
   .footer-inner { grid-template-columns: 1fr; }
@@ -726,7 +739,9 @@ footer {
 <canvas id="bg-canvas"></canvas>
 
 <header>
-  <div class="nav-logo">⚔️ GalaxyMC</div>
+  <div class="nav-logo">
+    ⚔️ GalaxyMC
+  </div>
   <nav>
     <button class="nav-btn active" onclick="showPage('dashboard', this)">🏠 Home</button>
     <button class="nav-btn" onclick="showPage('news', this)">📢 News</button>
@@ -741,8 +756,9 @@ footer {
 <div id="page-dashboard" class="tab-page active">
 
   <div class="hero">
+    <img src="https://ik.imagekit.io/td6lavsbp/1458361061257380009.webp" alt="GalaxyMC Logo" class="hero-logo-img">
     <h1 class="hero-title">✦ GALAXYMC ✦</h1>
-    <p class="hero-sub">🚀 India's #1 Bedrock Survival & PvP Server 🚀</p>
+    <p class="hero-sub">🚀 India's #1 Minecraft Server 🚀</p>
 
     <div class="status-row">
       <div class="stat-block">
@@ -802,40 +818,40 @@ footer {
     <div class="mc-card mb24">
       <div class="card-title">✨ Server Features</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;" class="card-body">
-        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">💻 &nbsp;<span class="hl-blue">Cross-Play Support</span><br><span style="font-size:7px;color:#666;margin-top:4px;display:block;">Java + Bedrock + Cracked + Premium</span></div>
-        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">⏳ &nbsp;<span class="hl-green">24/7 Online</span><br><span style="font-size:7px;color:#666;margin-top:4px;display:block;">Server is always up and running</span></div>
-        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">🗳️ &nbsp;<span class="hl-gold">Voting & Free Ranks</span><br><span style="font-size:7px;color:#666;margin-top:4px;display:block;">Free rankup system by doing votes</span></div>
-        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">🏡 &nbsp;<span class="hl-green">Land Claim & Economy</span><br><span style="font-size:7px;color:#666;margin-top:4px;display:block;">Protect builds and trade with players</span></div>
-        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">⚔️ &nbsp;<span class="hl-red">Arena & Warps</span><br><span style="font-size:7px;color:#666;margin-top:4px;display:block;">Fast travel and PvP arenas</span></div>
-        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">🛡️ &nbsp;<span class="hl-green">Lag-Free Experience</span><br><span style="font-size:7px;color:#666;margin-top:4px;display:block;">Dedicated VPS, smooth 20 TPS</span></div>
-        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">🌍 &nbsp;<span class="hl-gold">Custom World Gen</span><br><span style="font-size:7px;color:#666;margin-top:4px;display:block;">Beautiful terrain and structures</span></div>
-        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">👮 &nbsp;<span class="hl-blue">Staff & Anti-Cheat</span><br><span style="font-size:7px;color:#666;margin-top:4px;display:block;">Active support and no hackers</span></div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">💻 &nbsp;<span class="hl-blue">Cross-Play Support</span><br><span style="font-size:7px;color:#aaa;margin-top:6px;display:block;line-height:1.4;">Java + Bedrock + Cracked + Premium</span></div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">⏳ &nbsp;<span class="hl-green">24/7 Online</span><br><span style="font-size:7px;color:#aaa;margin-top:6px;display:block;line-height:1.4;">Server is always up and running</span></div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">🗳️ &nbsp;<span class="hl-gold">Voting & Free Ranks</span><br><span style="font-size:7px;color:#aaa;margin-top:6px;display:block;line-height:1.4;">Free rankup system by doing votes</span></div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">🏡 &nbsp;<span class="hl-green">Land Claim & Economy</span><br><span style="font-size:7px;color:#aaa;margin-top:6px;display:block;line-height:1.4;">Protect builds and trade with players</span></div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">⚔️ &nbsp;<span class="hl-red">Arena & Warps</span><br><span style="font-size:7px;color:#aaa;margin-top:6px;display:block;line-height:1.4;">Fast travel and PvP arenas</span></div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">🛡️ &nbsp;<span class="hl-green">Lag-Free Experience</span><br><span style="font-size:7px;color:#aaa;margin-top:6px;display:block;line-height:1.4;">Lag free smooth experience with low ping</span></div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">🌍 &nbsp;<span class="hl-gold">Custom World Gen</span><br><span style="font-size:7px;color:#aaa;margin-top:6px;display:block;line-height:1.4;">Beautiful terrain and structures</span></div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;outline:1px solid #222;">👮 &nbsp;<span class="hl-blue">Staff & Anti-Cheat</span><br><span style="font-size:7px;color:#aaa;margin-top:6px;display:block;line-height:1.4;">Active support and no hackers</span></div>
       </div>
     </div>
 
     <div class="grid-2">
       <div class="mc-card">
         <div class="card-title">🎮 Gamemodes</div>
-        <div class="card-body">
-
-          <div style="background:rgba(76,175,80,0.1);border-left:3px solid #4caf50;padding:10px 14px;margin-bottom:8px;outline:1px solid #000;">
-            <span class="hl-green">⚔️ Survival</span> &nbsp;<span class="badge green">ACTIVE</span><br>
-            <span style="font-size:7px;color:#777;">Custom world gen, rare ores, brutal mobs</span>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;" class="card-body">
+        
+          <div style="background:rgba(76,175,80,0.1);border-left:3px solid #4caf50;padding:12px 16px;outline:1px solid #000;">
+            <span class="hl-green" style="font-size:9px;">⚔️ Survival</span> &nbsp;<span class="badge green" style="font-size:6px;padding:2px 6px;">ACTIVE</span><br>
+            <span style="font-size:7px;color:#aaa;margin-top:6px;display:block;line-height:1.4;">Custom world gen, rare ores, brutal mobs</span>
           </div>
 
-          <div style="background:rgba(255,23,68,0.1);border-left:3px solid #ff1744;padding:10px 14px;margin-bottom:8px;outline:1px solid #000;">
-            <span class="hl-red">❤️ Lifesteal</span> &nbsp;<span class="badge blue">SOON</span><br>
-            <span style="font-size:7px;color:#777;">Steal hearts on kill, lose hearts on death</span>
+          <div style="background:rgba(255,23,68,0.1);border-left:3px solid #ff1744;padding:12px 16px;outline:1px solid #000;">
+            <span class="hl-red" style="font-size:9px;">❤️ Lifesteal</span> &nbsp;<span class="badge blue" style="font-size:6px;padding:2px 6px;">SOON</span><br>
+            <span style="font-size:7px;color:#aaa;margin-top:6px;display:block;line-height:1.4;">Steal hearts on kill, lose hearts on death</span>
           </div>
 
-          <div style="background:rgba(255,102,0,0.1);border-left:3px solid #ff6600;padding:10px 14px;margin-bottom:8px;outline:1px solid #000;">
-            <span class="hl-gold">🔥 PvP Arena</span> &nbsp;<span class="badge blue">SOON</span><br>
-            <span style="font-size:7px;color:#777;">Action-packed player vs player combat</span>
+          <div style="background:rgba(255,102,0,0.1);border-left:3px solid #ff6600;padding:12px 16px;outline:1px solid #000;">
+            <span class="hl-gold" style="font-size:9px;">🔥 PvP Practice</span> &nbsp;<span class="badge blue" style="font-size:6px;padding:2px 6px;">SOON</span><br>
+            <span style="font-size:7px;color:#aaa;margin-top:6px;display:block;line-height:1.4;">Action-packed player vs player combat</span>
           </div>
 
-          <div style="background:rgba(0,229,255,0.07);border-left:3px solid #00e5ff;padding:10px 14px;outline:1px solid #000;">
-            <span class="hl-blue">🛏️ Bedwars</span> &nbsp;<span class="badge blue">SOON</span><br>
-            <span style="font-size:7px;color:#777;">Defend your bed and destroy others</span>
+          <div style="background:rgba(0,229,255,0.07);border-left:3px solid #00e5ff;padding:12px 16px;outline:1px solid #000;">
+            <span class="hl-blue" style="font-size:9px;">🛏️ Bedwars</span> &nbsp;<span class="badge blue" style="font-size:6px;padding:2px 6px;">SOON</span><br>
+            <span style="font-size:7px;color:#aaa;margin-top:6px;display:block;line-height:1.4;">Defend your bed and destroy others</span>
           </div>
 
         </div>
@@ -1045,7 +1061,9 @@ footer {
   <div class="footer-grass"></div>
   <div class="footer-inner">
     <div>
-      <div class="footer-logo">⚔️ GalaxyMC</div>
+      <div class="footer-logo">
+        ⚔️ GalaxyMC
+      </div>
       <div class="footer-desc">India's public Minecraft server. Built with 2+ years of MC experience. Season 2 is live.</div>
     </div>
     <div>
