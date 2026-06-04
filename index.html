@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GalaxyMC — Survival Server</title>
+<!-- Favicon Added Here -->
+<link rel="icon" type="image/webp" href="https://ik.imagekit.io/td6lavsbp/1458361061257380009.webp">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 /* ============================================
@@ -294,6 +296,7 @@ nav {
 
 .stat-value.green { color: var(--mc-emerald); text-shadow: 1px 1px 0 #000, 0 0 10px rgba(0,230,118,0.4); }
 .stat-value.gold  { color: var(--mc-gold);    text-shadow: 1px 1px 0 #000, 0 0 10px rgba(255,215,0,0.4); }
+.stat-value.red   { color: var(--mc-redstone);text-shadow: 1px 1px 0 #000, 0 0 10px rgba(255,23,68,0.4); }
 
 /* HERO BUTTONS */
 .hero-btns {
@@ -763,7 +766,7 @@ footer {
     <div class="status-row">
       <div class="stat-block">
         <span class="stat-label">Server Status</span>
-        <span class="stat-value green">🟢 ONLINE</span>
+        <span class="stat-value" id="server-status">Loading...</span>
       </div>
       <div class="stat-block">
         <span class="stat-label">Players Online</span>
@@ -775,12 +778,12 @@ footer {
       </div>
       <div class="stat-block">
         <span class="stat-label">Server TPS</span>
-        <span class="stat-value green">20.0</span>
+        <span class="stat-value" id="server-tps">Loading...</span>
       </div>
     </div>
 
     <div class="hero-btns">
-      <button class="mc-btn green" onclick="copyIP('play.galaxymcpe.fun')">📋 Copy Bedrock IP</button>
+      <button class="mc-btn green" onclick="copyIP('play.galaxymcpe.fun:19132')">📋 COPY IP</button>
       <button class="mc-btn blue" onclick="showPage('store', document.querySelector('[onclick*=store]'))">🛒 Buy Ranks</button>
       <button class="mc-btn gold" onclick="window.open('https://discord.galaxymcpe.fun','_blank')">💬 Discord</button>
     </div>
@@ -806,7 +809,7 @@ footer {
         <div class="card-title">⭐ Quick Connect</div>
         <div class="card-body">
           <span class="hl-blue">🔗 Bedrock IP:</span><br>
-          &nbsp;&nbsp;<span class="hl-gold" style="cursor:pointer" onclick="copyIP('play.galaxymcpe.fun')">play.galaxymcpe.fun</span><br>
+          &nbsp;&nbsp;<span class="hl-gold" style="cursor:pointer" onclick="copyIP('play.galaxymcpe.fun:19132')">play.galaxymcpe.fun</span><br>
           &nbsp;&nbsp;Port: <span class="hl-green">19132</span><br><br>
           <span class="hl-purple">💬 Discord:</span><br>
           &nbsp;&nbsp;<span class="hl-gold" style="cursor:pointer" onclick="window.open('https://discord.galaxymcpe.fun','_blank')">discord.galaxymcpe.fun</span>
@@ -1085,7 +1088,7 @@ footer {
     <div>
       <div class="footer-heading">📋 Server Info</div>
       <ul class="footer-links">
-        <li><a onclick="copyIP('play.galaxymcpe.fun')">play.galaxymcpe.fun</a></li>
+        <li><a onclick="copyIP('play.galaxymcpe.fun:19132')">play.galaxymcpe.fun</a></li>
         <li><a>Port: 19132</a></li>
       </ul>
     </div>
@@ -1198,15 +1201,32 @@ function updateServerStats() {
     .then(response => response.json())
     .then(data => {
       const countElement = document.getElementById('player-count');
+      const statusElement = document.getElementById('server-status');
+      const tpsElement = document.getElementById('server-tps');
+
       if (data.online) {
         countElement.textContent = data.players.online + '/' + data.players.max;
+        
+        statusElement.textContent = '🟢 ONLINE';
+        statusElement.className = 'stat-value green';
+        
+        tpsElement.textContent = '20.0';
+        tpsElement.className = 'stat-value green';
       } else {
         countElement.textContent = 'Offline';
+        
+        statusElement.textContent = '🔴 OFFLINE';
+        statusElement.className = 'stat-value red';
+        
+        tpsElement.textContent = 'Offline';
+        tpsElement.className = 'stat-value red';
       }
     })
     .catch(err => {
       console.error('Error fetching server stats:', err);
       document.getElementById('player-count').textContent = 'Error';
+      document.getElementById('server-status').textContent = 'Error';
+      document.getElementById('server-tps').textContent = 'Error';
     });
 }
 // Update stats every 15 seconds
